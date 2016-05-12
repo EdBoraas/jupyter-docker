@@ -1,4 +1,4 @@
-FROM eboraas/jupyter
+FROM eboraas/tensorflow:build-env
 MAINTAINER Ed Boraas <ed@boraas.ca>
 
 # Docker Hub currently limits automated builds to 1 CPU and 2GB of RAM.
@@ -7,24 +7,25 @@ MAINTAINER Ed Boraas <ed@boraas.ca>
 # this value appropriately.
 ENV CONCURRENT_JOBS 2
 
+# Clone the official TensorFlow repo, configure, build, install, then remove all build artifacts
+WORKDIR /usr/src
 ENV PYTHON_BIN_PATH /usr/bin/python
 ENV TF_NEED_GCP 0
 ENV TF_NEED_CUDA 0
-RUN apt-get update && \
-    apt-get -y install openjdk-8-jdk-headless pkg-config zip g++ zlib1g-dev unzip bash-completion wget git swig python-dev python-wheel && \
-    cd /tmp/ && \
-    wget --no-verbose https://github.com/bazelbuild/bazel/releases/download/0.2.2/bazel_0.2.2-linux-x86_64.deb && \
-    dpkg -i --force-depends bazel_0.2.2-linux-x86_64.deb && \
-    git clone --recurse-submodules --single-branch --depth=1 https://github.com/tensorflow/tensorflow && \
-    cd /tmp/tensorflow && \
+RUN git clone --recurse-submodules https://github.com/tensorflow/tensorflow && \
+    cd tensorflow/ && \
     ./configure && \
     bazel --batch build --noshow_progress --spawn_strategy=standalone --genrule_strategy=standalone -c opt -j ${CONCURRENT_JOBS} tensorflow/tools/pip_package:build_pip_package && \
     bazel-bin/tensorflow/tools/pip_package/build_pip_package /tmp/tensorflow_pkg && \
     /usr/local/bin/pip --no-cache-dir install --upgrade /tmp/tensorflow_pkg/*.whl && \
-    dpkg --purge bazel openjdk-8-jdk-headless pkg-config zip g++ zlib1g-dev unzip bash-completion wget git swig python-dev python-wheel && \
+    cd /usr/src && \
+    rm -r /usr/src/tensorflow/ /tmp/tensorflow_pkg/ /root/.cache/bazel/ /root/.cache/pip/
+# Removing the build environment is optional; it cleans up the resulting image itself, but does not save any net space due to
+# the retention of intermediate images.
+RUN dpkg --purge bazel openjdk-8-jdk-headless pkg-config zip g++ zlib1g-dev unzip bash-completion curl git swig python-dev python-wheel && \
     apt-get -y autoremove && \
     apt-get clean && \
-    rm -r /var/lib/apt/lists/* /tmp/bazel_0.2.2-linux-x86_64.deb /tmp/tensorflow/ /tmp/tensorflow_pkg/ /root/.cache/bazel/ /root/.cache/pip/
+    rm -r /var/lib/apt/lists/* /usr/src/tensorflow/ /tmp/tensorflow_pkg/
 
 # Jupyter Notebook
 EXPOSE 8888
