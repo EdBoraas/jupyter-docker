@@ -10,7 +10,7 @@ RUN apt-get update && \
     dpkg -i /tmp/bazel.deb && \
     git clone --recurse-submodules https://github.com/tensorflow/tensorflow && \
     cd /tmp/tensorflow && ./configure && \
-    bazel --batch build --noshow_progress --spawn_strategy=standalone --genrule_strategy=standalone -c opt -j 8 tensorflow/tools/pip_package:build_pip_package && \
+    bazel --batch build --noshow_progress --spawn_strategy=standalone --genrule_strategy=standalone -c opt -j 2 tensorflow/tools/pip_package:build_pip_package && \
     bazel-bin/tensorflow/tools/pip_package/build_pip_package /tmp/tensorflow_pkg && \
     /usr/local/bin/pip --no-cache-dir install --upgrade /tmp/tensorflow_pkg/*.whl && \
     dpkg --purge bazel openjdk-8-jdk pkg-config zip g++ zlib1g-dev unzip bash-completion curl git swig python-dev python-wheel && \
