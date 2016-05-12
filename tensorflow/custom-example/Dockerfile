@@ -22,10 +22,10 @@ RUN git clone --recurse-submodules https://github.com/tensorflow/tensorflow && \
     rm -r /usr/src/tensorflow/ /tmp/tensorflow_pkg/ /root/.cache/bazel/ /root/.cache/pip/
 # Removing the build environment is optional; it cleans up the resulting image itself, but does not save any net space due to
 # the retention of intermediate images.
-RUN dpkg --purge bazel openjdk-8-jdk-headless pkg-config zip g++ zlib1g-dev unzip bash-completion curl git swig python-dev python-wheel && \
+RUN dpkg --purge openjdk-8-jdk-headless pkg-config zip g++ zlib1g-dev unzip bash-completion curl git swig python-dev python-wheel && \
     apt-get -y autoremove && \
     apt-get clean && \
-    rm -r /var/lib/apt/lists/* /usr/src/tensorflow/ /tmp/tensorflow_pkg/
+    rm -r /var/lib/apt/lists/*
 
 # Jupyter Notebook
 EXPOSE 8888
