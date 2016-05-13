@@ -2,10 +2,11 @@ FROM eboraas/jupyter
 MAINTAINER Ed Boraas <ed@boraas.ca>
 
 # Docker Hub currently limits automated builds to 1 CPU and 2GB of RAM.
-# As such, I set the concurrency to 2 jobs to try to avoid resource
+# As such, I set the default concurrency to 2 jobs to try to avoid resource
 # starvation. If you're building this yourself, you'll want to increase
-# this value appropriately.
-ENV CONCURRENT_JOBS 2
+# this value appropriately. This can be done by editing this Dockerfile, or
+# at build time using, e.g.,  `docker build --build-arg CONCURRENT_JOBS=8`
+ARG CONCURRENT_JOBS=2
 
 ENV PYTHON_BIN_PATH /usr/bin/python
 ENV TF_NEED_GCP 0
