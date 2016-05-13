@@ -2,12 +2,15 @@ FROM eboraas/tensorflow
 MAINTAINER Ed Boraas <ed@boraas.ca>
 
 RUN apt-get update && \
-    apt-get -y install xvfb zlib1g python-opengl ffmpeg build-essential python-dev cmake zlib1g-dev && \
-    /usr/local/bin/pip --no-cache-dir install --upgrade 'gym[all]' && \
-    dpkg --purge build-essential python-dev cmake zlib1g-dev && \
+    apt-get -y install xvfb zlib1g python-opengl ffmpeg build-essential git swig python-dev cmake zlib1g-dev && \
+    cd /tmp/ && \
+    git clone https://github.com/openai/gym && \
+    cd gym/ && \
+    /usr/local/bin/pip --no-cache-dir install --upgrade '.[all]' && \
+    dpkg --purge build-essential git swig python-dev cmake zlib1g-dev && \
     apt-get -y autoremove && \
     apt-get clean && \
-    rm -r /var/lib/apt/lists/* /root/.cache/pip/
+    rm -r /var/lib/apt/lists/* /root/.cache/pip/ /tmp/gym/
 
 # Jupyter Notebook
 EXPOSE 8888
