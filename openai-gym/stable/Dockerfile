@@ -1,4 +1,4 @@
-FROM eboraas/tensorflow:nightly
+FROM eboraas/tensorflow:stable
 MAINTAINER Ed Boraas <ed@boraas.ca>
 
 RUN apt-get update && \
