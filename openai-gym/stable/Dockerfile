@@ -2,11 +2,13 @@ FROM eboraas/tensorflow:stable
 MAINTAINER Ed Boraas <ed@boraas.ca>
 
 RUN apt-get update && \
-    apt-get -y install xvfb zlib1g python-opengl ffmpeg build-essential git swig python-dev cmake zlib1g-dev && \
+    apt-get -y install xvfb zlib1g python-opengl ffmpeg libsdl2-2.0-0 libboost-python1.58.0 libboost-thread1.58.0 libboost-filesystem1.58.0 libboost-system1.58.0 build-essential git swig python-dev cmake zlib1g-dev libsdl2-dev libboost-all-dev wget unzip && \
     cd /tmp/ && \
     git clone https://github.com/openai/gym && \
     cd gym/ && \
     /usr/local/bin/pip --no-cache-dir install --upgrade '.[all]' && \
+    dpkg --purge libsdl2-dev libboost-all-dev wget unzip && \
+    apt-get -y autoremove && \
     dpkg --purge build-essential git swig python-dev cmake zlib1g-dev && \
     apt-get -y autoremove && \
     apt-get clean && \
