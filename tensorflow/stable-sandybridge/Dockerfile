@@ -12,7 +12,7 @@ RUN /usr/local/bin/pip --no-cache-dir uninstall -y scikit-learn && \
 # starvation. If you're building this yourself, you'll want to increase
 # this value appropriately. This can be done by editing this Dockerfile, or
 # at build time using, e.g.,  `docker build --build-arg CONCURRENT_JOBS=8`
-ARG CONCURRENT_JOBS=2
+ARG CONCURRENT_JOBS=1
 
 ENV PYTHON_BIN_PATH /usr/bin/python
 ENV TF_NEED_GCP 0
