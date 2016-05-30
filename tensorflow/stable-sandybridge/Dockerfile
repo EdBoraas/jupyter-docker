@@ -14,6 +14,9 @@ RUN /usr/local/bin/pip --no-cache-dir uninstall -y scikit-learn && \
 # at build time using, e.g.,  `docker build --build-arg CONCURRENT_JOBS=8`
 ARG CONCURRENT_JOBS=1
 
+
+# Note: Docker Hub automated builds sometimes fail on Bazel trying to pull from GitHub; nasty
+# hack included to try multiple times, in place until Bazel incorporates retry support.
 ENV PYTHON_BIN_PATH /usr/bin/python
 ENV TF_NEED_GCP 0
 ENV TF_NEED_CUDA 0
@@ -25,6 +28,10 @@ RUN apt-get update && \
     git clone --recurse-submodules --branch r0.8 --single-branch --depth=1 https://github.com/tensorflow/tensorflow && \
     cd /tmp/tensorflow && \
     ./configure && \
+    bazel --batch build --noshow_progress --spawn_strategy=standalone --genrule_strategy=standalone -c opt --copt="-march=sandybridge" --copt="-mtune=sandybridge" --copt="-mavx" --define=use_fast_cpp_protos=true -j ${CONCURRENT_JOBS} tensorflow/tools/pip_package:build_pip_package || \
+    bazel --batch build --noshow_progress --spawn_strategy=standalone --genrule_strategy=standalone -c opt --copt="-march=sandybridge" --copt="-mtune=sandybridge" --copt="-mavx" --define=use_fast_cpp_protos=true -j ${CONCURRENT_JOBS} tensorflow/tools/pip_package:build_pip_package || \
+    bazel --batch build --noshow_progress --spawn_strategy=standalone --genrule_strategy=standalone -c opt --copt="-march=sandybridge" --copt="-mtune=sandybridge" --copt="-mavx" --define=use_fast_cpp_protos=true -j ${CONCURRENT_JOBS} tensorflow/tools/pip_package:build_pip_package || \
+    bazel --batch build --noshow_progress --spawn_strategy=standalone --genrule_strategy=standalone -c opt --copt="-march=sandybridge" --copt="-mtune=sandybridge" --copt="-mavx" --define=use_fast_cpp_protos=true -j ${CONCURRENT_JOBS} tensorflow/tools/pip_package:build_pip_package || \
     bazel --batch build --noshow_progress --spawn_strategy=standalone --genrule_strategy=standalone -c opt --copt="-march=sandybridge" --copt="-mtune=sandybridge" --copt="-mavx" --define=use_fast_cpp_protos=true -j ${CONCURRENT_JOBS} tensorflow/tools/pip_package:build_pip_package && \
     bazel-bin/tensorflow/tools/pip_package/build_pip_package /tmp/tensorflow_pkg && \
     /usr/local/bin/pip --no-cache-dir install --upgrade /tmp/tensorflow_pkg/*.whl && \
