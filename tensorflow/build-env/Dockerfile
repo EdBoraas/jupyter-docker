@@ -15,11 +15,11 @@ RUN apt-get update && \
 
 # Download and install official Bazel .deb package
 WORKDIR /tmp
-RUN curl --location --silent --show-error --remote-name https://github.com/bazelbuild/bazel/releases/download/0.2.2/bazel-0.2.2-installer-linux-x86_64.sh && \
-    echo '3213c9d2339892fec911897ef93e0e5bbbf90b2d482daa9c4a5ef51ad0b6e165  bazel-0.2.2-installer-linux-x86_64.sh' |sha256sum --check --quiet && \
-    chmod +x bazel-0.2.2-installer-linux-x86_64.sh && \
-    ./bazel-0.2.2-installer-linux-x86_64.sh && \
-    rm bazel-0.2.2-installer-linux-x86_64.sh
+RUN curl --location --silent --show-error --remote-name https://github.com/bazelbuild/bazel/releases/download/0.2.3/bazel-0.2.3-installer-linux-x86_64.sh && \
+    echo 'e0e4efe35b2c9f2b1f3c3929fc401e27c312090e6a305c046ecb59b9e3128e00  bazel-0.2.3-installer-linux-x86_64.sh' |sha256sum --check --quiet && \
+    chmod +x bazel-0.2.3-installer-linux-x86_64.sh && \
+    ./bazel-0.2.3-installer-linux-x86_64.sh && \
+    rm bazel-0.2.3-installer-linux-x86_64.sh
 
 # By default, clone the official TensorFlow repo and run a shell suitable for building/working interactively
 WORKDIR /usr/src

@@ -23,8 +23,8 @@ ENV TF_NEED_CUDA 0
 RUN apt-get update && \
     apt-get -y install openjdk-8-jdk-headless pkg-config zip g++ zlib1g-dev unzip bash-completion wget git swig python-dev python-wheel && \
     cd /tmp/ && \
-    wget --no-verbose https://github.com/bazelbuild/bazel/releases/download/0.2.2/bazel_0.2.2-linux-x86_64.deb && \
-    dpkg -i --force-depends bazel_0.2.2-linux-x86_64.deb && \
+    wget --no-verbose https://github.com/bazelbuild/bazel/releases/download/0.2.3/bazel_0.2.3-linux-x86_64.deb && \
+    dpkg -i --force-depends bazel_0.2.3-linux-x86_64.deb && \
     git clone --recurse-submodules --branch r0.8 --single-branch --depth=1 https://github.com/tensorflow/tensorflow && \
     cd /tmp/tensorflow && \
     ./configure && \
@@ -38,7 +38,7 @@ RUN apt-get update && \
     dpkg --purge bazel openjdk-8-jdk-headless pkg-config zip g++ zlib1g-dev unzip bash-completion wget git swig python-dev python-wheel && \
     apt-get -y autoremove && \
     apt-get clean && \
-    rm -r /var/lib/apt/lists/* /tmp/bazel_0.2.2-linux-x86_64.deb /tmp/tensorflow/ /tmp/tensorflow_pkg/ /root/.cache/bazel/ /root/.cache/pip/
+    rm -r /var/lib/apt/lists/* /tmp/bazel_0.2.3-linux-x86_64.deb /tmp/tensorflow/ /tmp/tensorflow_pkg/ /root/.cache/bazel/ /root/.cache/pip/
 
 # Jupyter Notebook
 EXPOSE 8888
