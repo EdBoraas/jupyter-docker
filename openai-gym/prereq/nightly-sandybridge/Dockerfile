@@ -6,7 +6,3 @@ RUN apt-get update && \
     apt-get -y autoremove && \
     apt-get clean && \
     rm -r /var/lib/apt/lists/*
-
-WORKDIR /mnt/notebooks
-
-CMD ["/bin/bash"]
