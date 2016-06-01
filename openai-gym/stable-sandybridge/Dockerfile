@@ -1,4 +1,4 @@
-FROM eboraas/tensorflow:stable-sandybridge
+FROM eboraas/openai-gym:prereq-stable-sandybridge
 MAINTAINER Ed Boraas <ed@boraas.ca>
 
 RUN apt-get update && \

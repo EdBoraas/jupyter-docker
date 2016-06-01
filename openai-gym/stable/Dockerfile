@@ -1,4 +1,4 @@
-FROM eboraas/tensorflow:stable
+FROM eboraas/openai-gym:prereq-stable
 MAINTAINER Ed Boraas <ed@boraas.ca>
 
 RUN apt-get update && \
