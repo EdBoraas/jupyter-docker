@@ -1,4 +1,15 @@
-FROM eboraas/jupyter
+# Note: this Dockerfile inherits from eboraas/tensorflow:build-env in
+# order to ensure that the build process stays within Docker Hub's
+# 2 hour build window. The downside to inheriting from build-env is
+# that the image ends up much larger, due to the retained intermediate
+# build images. I've set this Dockerfile up in such a way that it can
+# also inherit from eboraas/jupyter without any further changes. The
+# build time will be slightly longer, but the image will be much more
+# compact.
+# TL;DR: You want to use "FROM eboraas/jupyter"
+
+#FROM eboraas/jupyter
+FROM eboraas/tensorflow:build-env
 MAINTAINER Ed Boraas <ed@boraas.ca>
 
 # Docker Hub currently limits automated builds to 1 CPU and 2GB of RAM.
@@ -14,10 +25,15 @@ ENV PYTHON_BIN_PATH /usr/bin/python
 ENV TF_NEED_GCP 0
 ENV TF_NEED_CUDA 0
 RUN apt-get update && \
-    apt-get -y install openjdk-8-jdk-headless pkg-config zip g++ zlib1g-dev unzip bash-completion wget git swig python-dev python-wheel && \
+    apt-get -y install openjdk-8-jdk-headless pkg-config zip g++ zlib1g-dev unzip bash-completion curl git swig python-dev python-wheel && \
     cd /tmp/ && \
-    wget --no-verbose https://github.com/bazelbuild/bazel/releases/download/0.2.3/bazel_0.2.3-linux-x86_64.deb && \
-    dpkg -i --force-depends bazel_0.2.3-linux-x86_64.deb && \
+    if [ -z $(which bazel) ]; then \
+        curl --location --silent --show-error --remote-name https://github.com/bazelbuild/bazel/releases/download/0.2.3/bazel-0.2.3-installer-linux-x86_64.sh && \
+        echo 'e0e4efe35b2c9f2b1f3c3929fc401e27c312090e6a305c046ecb59b9e3128e00  bazel-0.2.3-installer-linux-x86_64.sh' |sha256sum --check --quiet && \
+        chmod +x bazel-0.2.3-installer-linux-x86_64.sh && \
+        ./bazel-0.2.3-installer-linux-x86_64.sh && \
+        rm bazel-0.2.3-installer-linux-x86_64.sh ; \
+    fi && \
     git clone --recurse-submodules --single-branch --depth=1 https://github.com/tensorflow/tensorflow && \
     cd /tmp/tensorflow && \
     ./configure && \
@@ -28,10 +44,10 @@ RUN apt-get update && \
     bazel --batch build --noshow_progress --spawn_strategy=standalone --genrule_strategy=standalone -c opt --copt="-march=sandybridge" --copt="-mtune=sandybridge" --copt="-mavx" --define=use_fast_cpp_protos=true -j ${CONCURRENT_JOBS} tensorflow/tools/pip_package:build_pip_package && \
     bazel-bin/tensorflow/tools/pip_package/build_pip_package /tmp/tensorflow_pkg && \
     /usr/local/bin/pip --no-cache-dir install --upgrade /tmp/tensorflow_pkg/*.whl && \
-    dpkg --purge bazel openjdk-8-jdk-headless pkg-config zip g++ zlib1g-dev unzip bash-completion wget git swig python-dev python-wheel && \
+    dpkg --purge bazel openjdk-8-jdk-headless pkg-config zip g++ zlib1g-dev unzip bash-completion curl git swig python-dev python-wheel && \
     apt-get -y autoremove && \
     apt-get clean && \
-    rm -r /var/lib/apt/lists/* /tmp/bazel_0.2.3-linux-x86_64.deb /tmp/tensorflow/ /tmp/tensorflow_pkg/ /root/.cache/bazel/ /root/.cache/pip/
+    rm -r /var/lib/apt/lists/* /tmp/tensorflow/ /tmp/tensorflow_pkg/ /root/.cache/bazel/ /root/.cache/pip/
 
 # Jupyter Notebook
 EXPOSE 8888
