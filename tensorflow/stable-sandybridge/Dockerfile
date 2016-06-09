@@ -19,11 +19,11 @@ RUN /usr/local/bin/pip --no-cache-dir uninstall -y scikit-learn && \
     rm -r /root/.cache/pip/
 
 # Docker Hub currently limits automated builds to 1 CPU and 2GB of RAM.
-# As such, I set the default concurrency to 1 job to try to avoid resource
+# As such, I set the default concurrency to 2 jobs to try to avoid resource
 # starvation. If you're building this yourself, you'll want to increase
 # this value appropriately. This can be done by editing this Dockerfile, or
 # at build time using, e.g.,  `docker build --build-arg CONCURRENT_JOBS=8`
-ARG CONCURRENT_JOBS=1
+ARG CONCURRENT_JOBS=2
 
 
 # Note: Docker Hub automated builds sometimes fail on Bazel trying to pull from GitHub; nasty
