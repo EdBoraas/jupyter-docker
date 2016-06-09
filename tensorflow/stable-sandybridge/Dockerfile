@@ -41,7 +41,7 @@ RUN apt-get update && \
         ./bazel-0.2.3-installer-linux-x86_64.sh && \
         rm bazel-0.2.3-installer-linux-x86_64.sh ; \
     fi && \
-    git clone --recurse-submodules --branch r0.8 --single-branch --depth=1 https://github.com/tensorflow/tensorflow && \
+    git clone --recurse-submodules --branch r0.9 --single-branch --depth=1 https://github.com/tensorflow/tensorflow && \
     cd /tmp/tensorflow && \
     ./configure && \
     bazel --batch build --noshow_progress --spawn_strategy=standalone --genrule_strategy=standalone -c opt --copt="-march=sandybridge" --copt="-mtune=sandybridge" --copt="-mavx" --define=use_fast_cpp_protos=true -j ${CONCURRENT_JOBS} tensorflow/tools/pip_package:build_pip_package || \
