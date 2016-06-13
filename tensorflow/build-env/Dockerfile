@@ -15,13 +15,17 @@ RUN apt-get update && \
 
 # Download and install official Bazel .deb package
 WORKDIR /tmp
-RUN curl --location --silent --show-error --remote-name https://github.com/bazelbuild/bazel/releases/download/0.2.3/bazel-0.2.3-installer-linux-x86_64.sh && \
-    echo 'e0e4efe35b2c9f2b1f3c3929fc401e27c312090e6a305c046ecb59b9e3128e00  bazel-0.2.3-installer-linux-x86_64.sh' |sha256sum --check --quiet && \
-    chmod +x bazel-0.2.3-installer-linux-x86_64.sh && \
-    ./bazel-0.2.3-installer-linux-x86_64.sh && \
-    rm bazel-0.2.3-installer-linux-x86_64.sh
+RUN curl --location --silent --show-error --remote-name https://github.com/bazelbuild/bazel/releases/download/0.3.0/bazel-0.3.0-installer-linux-x86_64.sh && \
+    echo '91cae68d1b200a00c982df204a285042c104a3bfe629af5e8d0f289418f60468  bazel-0.3.0-installer-linux-x86_64.sh' |sha256sum --check --quiet && \
+    chmod +x bazel-0.3.0-installer-linux-x86_64.sh && \
+    ./bazel-0.3.0-installer-linux-x86_64.sh && \
+    rm bazel-0.3.0-installer-linux-x86_64.sh
 
-# By default, clone the official TensorFlow repo and run a shell suitable for building/working interactively
+# Clone the official TensorFlow repo and have Bazel pull depencies
 WORKDIR /usr/src
-CMD ["/bin/bash", "-c", "git clone --recurse-submodules https://github.com/tensorflow/tensorflow && cd tensorflow && /bin/bash"]
+RUN git clone --recurse-submodules https://github.com/tensorflow/tensorflow
+WORKDIR /usr/src/tensorflow
+RUN bazel --batch fetch --noshow_progress //tensorflow/tools/pip_package:build_pip_package
+
+CMD ["/bin/bash"]
 
