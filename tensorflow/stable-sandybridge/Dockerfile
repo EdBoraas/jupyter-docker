@@ -12,11 +12,6 @@
 FROM eboraas/tensorflow:build-env
 MAINTAINER Ed Boraas <ed@boraas.ca>
 
-#Note: 0.8.0 has an issue where the bundled sklearn conflicts with the system sklearn in some cases.
-#Until a newer version of TensorFlow is released as stable, I'm removing sklearn from eboraas/tensorflow:stable
-#to prevent segfaults
-RUN /usr/local/bin/pip --no-cache-dir uninstall -y scikit-learn && \
-    rm -r /root/.cache/pip/
 
 # Docker Hub currently limits automated builds to 1 CPU and 2GB of RAM.
 # As such, I set the default concurrency to 2 jobs to try to avoid resource
