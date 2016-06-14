@@ -25,7 +25,13 @@ RUN curl --location --silent --show-error --remote-name https://github.com/bazel
 WORKDIR /usr/src
 RUN git clone --recurse-submodules https://github.com/tensorflow/tensorflow
 WORKDIR /usr/src/tensorflow
-RUN bazel --batch fetch --noshow_progress //tensorflow/tools/pip_package:build_pip_package
+
+# Ugly hack to work around lack of retry in Bazel
+RUN bazel --batch fetch --noshow_progress //tensorflow/tools/pip_package:build_pip_package || \
+    bazel --batch fetch --noshow_progress //tensorflow/tools/pip_package:build_pip_package || \
+    bazel --batch fetch --noshow_progress //tensorflow/tools/pip_package:build_pip_package || \
+    bazel --batch fetch --noshow_progress //tensorflow/tools/pip_package:build_pip_package || \
+    bazel --batch fetch --noshow_progress //tensorflow/tools/pip_package:build_pip_package
 
 CMD ["/bin/bash"]
 
