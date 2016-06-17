@@ -1,4 +1,4 @@
-FROM eboraas/openai-gym:prereq-nightly
+FROM eboraas/tensorflow:nightly
 MAINTAINER Ed Boraas <ed@boraas.ca>
 
 RUN apt-get update && \
