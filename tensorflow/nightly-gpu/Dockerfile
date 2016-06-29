@@ -9,8 +9,7 @@ RUN apt-get update && \
     /usr/local/bin/pip --no-cache-dir install --upgrade 'http://ci.tensorflow.org/view/Nightly/job/nigntly-matrix-linux-gpu/TF_BUILD_CONTAINER_TYPE=GPU,TF_BUILD_IS_OPT=OPT,TF_BUILD_IS_PIP=PIP,TF_BUILD_PYTHON_VERSION=PYTHON2,label=gpu-linux/lastSuccessfulBuild/artifact/pip_test/whl/tensorflow-0.8.0-cp27-none-linux_x86_64.whl' && \
     rm -r /root/.cache/pip/
 
-RUN echo -e "/usr/local/nvidia/lib\n/usr/local/nvidia/lib64\n/usr/local/cuda/lib\n/usr/local/cuda/lib64" > /etc/ld.so.conf.d/nvidia.conf
-RUN ldconfig
+ENV LD_LIBRARY_PATH=/usr/local/cuda/lib64:/usr/local/nvidia/lib64:/usr/local/cuda/lib:/usr/local/nvidia/lib:${LD_LIBRARY_PATH}
 
 # Jupyter Notebook
 EXPOSE 8888
