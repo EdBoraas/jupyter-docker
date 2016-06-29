@@ -4,6 +4,9 @@ MAINTAINER Ed Boraas <ed@boraas.ca>
 RUN /usr/local/bin/pip --no-cache-dir install --upgrade https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow-0.9.0-cp27-none-linux_x86_64.whl && \
     rm -r /root/.cache/pip/
 
+RUN echo -e "/usr/local/nvidia/lib\n/usr/local/nvidia/lib64\n/usr/local/cuda/lib\n/usr/local/cuda/lib64" > /etc/ld.so.conf.d/nvidia.conf
+RUN ldconfig
+
 # Jupyter Notebook
 EXPOSE 8888
 # TensorBoard
