@@ -5,7 +5,7 @@ RUN apt-get update && \
     apt-get -y install pkg-config python python-pip libffi6 libfreetype6 libpng16-16 libjpeg62-turbo libopenblas-base libffi-dev libfreetype6-dev libpng-dev libjpeg62-turbo-dev libopenblas-dev python-tk && \
     pip install --no-cache-dir --upgrade --ignore-installed pip && \
     for module in $(/usr/local/bin/pip list --no-cache-dir --outdated |cut -f1 -d' '); do /usr/local/bin/pip install --no-cache-dir --upgrade ${module}; done && \
-    /usr/local/bin/pip install --no-cache-dir --upgrade numpy scipy sklearn ipykernel matplotlib Pillow jupyter && \
+    /usr/local/bin/pip install --no-cache-dir --upgrade numpy scipy sklearn ipykernel matplotlib Pillow jupyter flask && \
     dpkg --purge pkg-config python-pip libffi-dev libfreetype6-dev libpng-dev libjpeg62-turbo-dev libopenblas-dev && \
     apt-get -y autoremove && \
     apt-get clean && \
